@@ -3,7 +3,7 @@ package socialMediaApp.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import socialMediaApp.models.PostImage;
-import socialMediaApp.responses.postImage.PostImageResponse;
+import socialMediaApp.dto.responses.postImage.PostImageResponse;
 
 @Mapper(componentModel = "spring")
 public interface PostImageMapper {

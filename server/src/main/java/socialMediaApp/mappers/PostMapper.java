@@ -3,8 +3,8 @@ package socialMediaApp.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import socialMediaApp.models.Post;
-import socialMediaApp.requests.PostAddRequest;
-import socialMediaApp.responses.post.PostGetResponse;
+import socialMediaApp.dto.requests.PostAddRequest;
+import socialMediaApp.dto.responses.post.PostGetResponse;
 
 import java.util.List;
 

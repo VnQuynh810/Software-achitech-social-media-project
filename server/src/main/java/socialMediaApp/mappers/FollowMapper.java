@@ -3,8 +3,8 @@ package socialMediaApp.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import socialMediaApp.models.Follow;
-import socialMediaApp.requests.FollowRequest;
-import socialMediaApp.responses.follow.FollowResponse;
+import socialMediaApp.dto.requests.FollowRequest;
+import socialMediaApp.dto.responses.follow.FollowResponse;
 
 import java.util.List;
 

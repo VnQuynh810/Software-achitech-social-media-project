@@ -5,10 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import socialMediaApp.requests.RegisterRequest;
-import socialMediaApp.responses.user.UserJwtResponse;
+import socialMediaApp.dto.responses.user.UserJwtResponse;
 
 import java.util.Date;
 import java.util.HashMap;

@@ -3,8 +3,8 @@ package socialMediaApp.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import socialMediaApp.models.Like;
-import socialMediaApp.requests.LikeRequest;
-import socialMediaApp.responses.like.LikeResponse;
+import socialMediaApp.dto.requests.LikeRequest;
+import socialMediaApp.dto.responses.like.LikeResponse;
 
 import java.util.List;
 

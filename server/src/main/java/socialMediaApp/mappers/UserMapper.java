@@ -2,9 +2,11 @@ package socialMediaApp.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import socialMediaApp.dto.responses.user.UserFollowerResponse;
+import socialMediaApp.dto.responses.user.UserFollowingResponse;
+import socialMediaApp.dto.responses.user.UserResponse;
 import socialMediaApp.models.*;
-import socialMediaApp.requests.UserAddRequest;
-import socialMediaApp.responses.user.*;
+import socialMediaApp.dto.requests.UserAddRequest;
 
 import java.util.List;
 

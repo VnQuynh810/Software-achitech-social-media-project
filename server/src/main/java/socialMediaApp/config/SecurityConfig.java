@@ -23,7 +23,6 @@ import socialMediaApp.security.JwtAuthFilter;
 import java.util.Arrays;
 import java.util.Collections;
 
-
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -37,7 +36,7 @@ public class SecurityConfig {
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "content-type"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "content-type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -46,7 +45,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -54,8 +53,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-            return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
@@ -71,14 +71,31 @@ public class SecurityConfig {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/**")
+                //Neu can thu api nao vao day viet y nhu dong ben duoi la duoc , t ko muon de no permit toan bo full api ngu lam
+                .antMatchers("/api/users/**").permitAll()
+                .antMatchers(
+                        "/",
+                        "/index.html",
+                        "/static/**",
+                        "/favicon.ico",
+                        "/manifest.json",
+                        "/logo192.png",
+                        "/logo512.png")
                 .permitAll()
-                .antMatchers(HttpMethod.GET,"/api/postimages/**")
-                .permitAll()
-                .anyRequest().authenticated();
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+
+                .antMatchers("/api/auth/**").permitAll()
+
+
+                .antMatchers(HttpMethod.GET, "/api/postimages/**").permitAll()
+
+
+
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
-
 
 }

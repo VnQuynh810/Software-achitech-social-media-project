@@ -5,10 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import socialMediaApp.models.User;
 import socialMediaApp.repositories.UserRepository;
 import socialMediaApp.requests.LoginRequest;
@@ -30,6 +27,10 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+    }
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("auth ok");
     }
 
     @PostMapping("/login")

@@ -4,10 +4,16 @@ server:
 app:
   api-prefix: /api/v1
 
-
 spring:
   application:
     name: api-gateway
+  main:
+      web-application-type: reactive
+
+  redis:
+      host: localhost
+      port: 6379
+
   cloud:
     gateway:
       routes:
@@ -17,6 +23,17 @@ spring:
               - Path=/api/**
           filters:
             - RewritePath=/api/v1/(?<segment>.*), /api/${segment}
+            
 
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 5
+            redis-rate-limiter.burstCapacity: 10
+            key-resolver: "#{@ipKeyResolver}"
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
 
 

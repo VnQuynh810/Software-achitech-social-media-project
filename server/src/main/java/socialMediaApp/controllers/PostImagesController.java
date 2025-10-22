@@ -13,8 +13,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/postimages")
-public class PostImagesController {
-
+public class PostImagesController{
     private final IPostImageService postImageService;
 
     public PostImagesController(PostImageService postImageService) {

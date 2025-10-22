@@ -1,0 +1,43 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+      javax:
+        persistence:
+          validation:
+            mode: none
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  cloud:
+    gateway:
+      routes:
+        - id: socialmedia
+          uri: http://localhost:8080
+          predicates:
+            - Cookie=mycookie,mycookievalue
+
+  datasource:
+    url: jdbc:mysql://localhost:3301/socialMediaApp?useSSL=false&serverTimezone=UTC
+    username: root
+    password: nguyen2005
+
+  cache:
+    type: redis
+
+  redis:
+    host: localhost
+    port: 6379
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+jwt:
+  secret: "mysupersecretkeymysupersecretkeymysupersecretkey"
+
+logging:
+  level:
+    org.springframework.cache: DEBUG
+
+

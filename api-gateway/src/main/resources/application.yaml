@@ -1,0 +1,22 @@
+server:
+  port: 8888
+
+app:
+  api-prefix: /api/v1
+
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: social-media
+          uri: http://localhost:8080
+          predicates:
+              - Path=/api/**
+          filters:
+            - RewritePath=/api/v1/(?<segment>.*), /api/${segment}
+
+
+

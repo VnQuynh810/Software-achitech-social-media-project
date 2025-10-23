@@ -32,4 +32,12 @@ export default class PostService{
             }
         })
     }
+    getAll(token) {
+        return axios.get(process.env.REACT_APP_API + "posts/getall", {
+            headers: {
+                'Authorization': "Bearer " + token
+            }
+        });
+    }
+
 }

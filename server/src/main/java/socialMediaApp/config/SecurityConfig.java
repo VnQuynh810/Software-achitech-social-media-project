@@ -73,6 +73,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 //Neu can thu api nao vao day viet y nhu dong ben duoi la duoc , t ko muon de no permit toan bo full api ngu lam
                 .antMatchers("/api/users/**").permitAll()
+                .antMatchers("/api/posts/**").permitAll()
                 .antMatchers(
                         "/",
                         "/index.html",

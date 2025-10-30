@@ -10,13 +10,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  cloud:
-    gateway:
-      routes:
-        - id: socialmedia
-          uri: http://localhost:8080
-          predicates:
-            - Cookie=mycookie,mycookievalue
+
 
   datasource:
     url: jdbc:mysql://localhost:3301/socialMediaApp?useSSL=false&serverTimezone=UTC

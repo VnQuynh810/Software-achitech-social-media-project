@@ -23,13 +23,17 @@ spring:
               - Path=/api/**
           filters:
             - RewritePath=/api/v1/(?<segment>.*), /api/${segment}
+
+
+
+
             
 
       default-filters:
         - name: RequestRateLimiter
           args:
-            redis-rate-limiter.replenishRate: 5
-            redis-rate-limiter.burstCapacity: 10
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 30
             key-resolver: "#{@ipKeyResolver}"
 
 logging:

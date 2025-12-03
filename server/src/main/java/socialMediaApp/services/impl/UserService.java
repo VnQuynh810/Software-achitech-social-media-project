@@ -4,6 +4,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import socialMediaApp.exception.InvalidDataException;
+import socialMediaApp.exception.ResourceNotFoundException;
+import socialMediaApp.exception.UserNotFoundException;
 import socialMediaApp.mappers.UserMapper;
 import socialMediaApp.models.Follow;
 import socialMediaApp.models.User;
@@ -37,7 +39,8 @@ public class UserService implements IUserService {
     @Override
     @Cacheable(value = "users", key = "#id")
     public UserResponse getResponseById(int id){
-        User user = userRepository.findById(id).orElse(null);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
         return userMapper.userToResponse(user);
     }
 
@@ -45,43 +48,62 @@ public class UserService implements IUserService {
     @Cacheable(value = "users", key = "#email")
     public UserResponse getByEmail(String email){
         User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new ResourceNotFoundException("User with email " + email + " not found");
+        }
         return userMapper.userToResponse(user);
     }
 
     @Override
     @Cacheable(value = "userFollowing", key = "#userId")
     public List<UserFollowingResponse> getUserFollowing(int userId){
-        return userMapper.followsToFollowingResponses(followRepository.findAllByUser_Id(userId));
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        List<Follow> follows = followRepository.findAllByUser_Id(userId);
+        return userMapper.followsToFollowingResponses(follows);
     }
 
     @Override
     @Cacheable(value = "isFollowing", key = "#userId + ':' + #followingId")
-    public boolean isFollowing(int userId, int followingId){
+    public boolean isFollowing(int userId, int followingId) {
+        // SỬA: Kiểm tra cả 2 user có tồn tại
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        userRepository.findById(followingId)
+                .orElseThrow(() -> new UserNotFoundException(followingId));
+
         Optional<Follow> follow = followRepository.findByUser_IdAndFollowing_Id(userId, followingId);
         return follow.isPresent();
     }
 
     @Override
     @Cacheable(value = "usersEntity", key = "#id")
-    public User getById(int id){
-        return userRepository.findById(id).get();
+    public User getById(int id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id)); // SỬA: Thay .get() bằng orElseThrow
     }
 
     @Override
     @CacheEvict(value = {"users", "usersEntity"}, allEntries = true)
-    public void add(UserAddRequest userAddRequest){
-        try {
-            User user = userMapper.requestToUser(userAddRequest);
-            userRepository.save(user);
+    public void add(UserAddRequest userAddRequest) {
+        if (userRepository.findByEmail(userAddRequest.getEmail()) != null) {
+            throw new InvalidDataException("Email already exists, Please try again!");
         }
-        catch (InvalidDataException e){
-            throw new InvalidDataException(e.getMessage());
-        }
+        User user = userMapper.requestToUser(userAddRequest);
+        userRepository.save(user);
     }
 
     @Override
     @CacheEvict(value = {"users", "usersEntity", "userFollowing", "isFollowing"}, allEntries = true)
-    public void delete(int id){
-        userRepository.deleteById(id);
+    public void delete(int id) {
+        // SỬA: Kiểm tra user có tồn tại trước khi xóa
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException( id));
+
+        userRepository.delete(user); // Hoặc deleteById(id)
     }
+
+    // THÊM: Method update user
+
 }

@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostImage {
+public class  PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,7 +25,8 @@ public class PostImage {
     @Column(name = "type")
     private String type;
 
-    @Column(name = "data",length = 1000)
+    @Lob
+    @Column(name = "data", columnDefinition = "LONGBLOB")
     private byte[] data;
     @NotNull
     @ManyToOne

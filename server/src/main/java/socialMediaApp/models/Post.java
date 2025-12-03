@@ -1,5 +1,6 @@
 package socialMediaApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,7 @@ public class Post {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     User user;
 
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
@@ -32,4 +34,5 @@ public class Post {
 
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     Set<Comment> comments;
+
 }

@@ -16,7 +16,7 @@ public class RateLimiterConfig {
     @Bean
     @Primary
     public RedisRateLimiter myRateLimiter() {
-        return new RedisRateLimiter(3, 3);
+        return new RedisRateLimiter(2, 10);
     }
 
     // 2. Key Resolver (Sửa tạm thành key cứng để test cho dễ)

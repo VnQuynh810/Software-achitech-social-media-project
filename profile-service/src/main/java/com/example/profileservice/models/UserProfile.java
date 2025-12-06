@@ -1,15 +1,10 @@
 package com.example.profileservice.models;
 
-import java.time.LocalDate;
-
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Property;
-import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -17,17 +12,26 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Node("user_profile")
+@Entity
+@Table(name = "user_profile") // tên bảng trong PostgreSQL
 public class UserProfile {
-    @Id
-    @GeneratedValue(generatorClass = UUIDStringGenerator.class)
-    String id;
 
-    @Property("userId")
+    @Id
+    @Column(length = 36)
+    String id;      // UUID dạng String, service sẽ tự set
+
+    @Column(name = "user_id", nullable = false)
     String userId;
 
+    @Column(name = "first_name")
     String firstName;
+
+    @Column(name = "last_name")
     String lastName;
+
+    @Column(name = "dob")
     LocalDate dob;
+
+    @Column(name = "city")
     String city;
 }

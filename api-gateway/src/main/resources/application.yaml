@@ -8,29 +8,27 @@ spring:
   application:
     name: api-gateway
   main:
-      web-application-type: reactive
+    web-application-type: reactive
   redis:
-      host: localhost
-      port: 6379
+    host: localhost
+    port: 6379
   cloud:
     gateway:
       routes:
         - id: social-media
-          uri: http://localhost:8080
+          uri: http://localhost:8081
           predicates:
-              - Path=/api/**
+            - Path=/api/v1/**
           filters:
             - RewritePath=/api/v1/(?<segment>.*), /api/${segment}
 
-      default-filters:
-        - name: RequestRateLimiter
-          args:
-            redis-rate-limiter.replenishRate: 1
-            redis-rate-limiter.burstCapacity: 30
-            key-resolver: "#{@ipKeyResolver}"
+            # CẤU HÌNH MỚI: Trỏ vào Bean Java
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                rate-limiter: "#{@myRateLimiter}"
 
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
-
-
+    org.springframework.data.redis: DEBUG

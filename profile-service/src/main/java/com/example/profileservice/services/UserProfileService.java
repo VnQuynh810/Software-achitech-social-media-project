@@ -5,10 +5,8 @@ import com.example.profileservice.dto.responses.UserProfileResponse;
 import com.example.profileservice.mapper.UserProfileMapper;
 import com.example.profileservice.models.UserProfile;
 import com.example.profileservice.repositories.UserProfileRepository;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-
-
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +26,12 @@ public class UserProfileService {
 
     public UserProfileResponse createProfile(ProfileCreationRequest request) {
         UserProfile userProfile = userProfileMapper.toUserProfile(request);
+
+        // nếu id chưa có thì tự generate UUID
+        if (userProfile.getId() == null) {
+            userProfile.setId(UUID.randomUUID().toString());
+        }
+
         userProfile = userProfileRepository.save(userProfile);
 
         return userProfileMapper.toUserProfileReponse(userProfile);
@@ -34,15 +39,15 @@ public class UserProfileService {
 
     public UserProfileResponse getProfile(String id) {
         UserProfile userProfile =
-                userProfileRepository.findById(id).orElseThrow(() -> new RuntimeException("Profile not found"));
+                userProfileRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Profile not found"));
 
         return userProfileMapper.toUserProfileReponse(userProfile);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public List<UserProfileResponse> getAllProfiles() {
         var profiles = userProfileRepository.findAll();
-
         return profiles.stream().map(userProfileMapper::toUserProfileReponse).toList();
     }
 }

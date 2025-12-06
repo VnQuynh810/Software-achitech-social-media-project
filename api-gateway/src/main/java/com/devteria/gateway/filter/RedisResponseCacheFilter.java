@@ -73,7 +73,9 @@ public class RedisResponseCacheFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return -2;
+        // Cũ: return -2;
+        // Mới: Chạy sau RateLimiter (Order 2)
+        return 10;
     }
 
     @Bean

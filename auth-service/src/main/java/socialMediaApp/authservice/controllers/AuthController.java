@@ -15,9 +15,8 @@ import socialMediaApp.authservice.models.User;
 import socialMediaApp.authservice.repositories.UserRepository;
 import socialMediaApp.authservice.security.JwtUtil;
 
-
-
-
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -78,6 +77,39 @@ public class AuthController {
         )
                 ,HttpStatus.OK
         );
+    }
+
+    // Thêm phương thức này vào AuthController để hỗ trợ test dễ hơn
+    // Nó trả về JSON: { "token": "...", "userId": "..." }
+    @PostMapping("/login-response-json")
+    public ResponseEntity<Map<String, String>> loginReturnJson(@RequestBody LoginRequest loginRequest) {
+        try {
+            // 1. Xác thực user
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+            );
+
+            // 2. Lấy thông tin user từ DB
+            User user = userRepository.findByEmail(loginRequest.getEmail());
+
+            // 3. Tạo token
+            String token = jwtUtil.generateToken(
+                    user.getEmail(),
+                    user.getId(), // Giả sử id là String hoặc Long
+                    user.getName() + " " + user.getLastName()
+            );
+
+            // 4. Đóng gói cả Token và ID vào Map để trả về JSON
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            // Lưu ý: ép kiểu về String nếu getId() trả về Long/Int: String.valueOf(user.getId())
+            response.put("userId", String.valueOf(user.getId()));
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
 }

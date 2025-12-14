@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(
         name = "auth-service",
-        url = "http://localhost:8081"   // sau này có service discovery thì chỉ cần name
+        url = "http://localhost:8081"
 )
 public interface AuthServiceClient {
 

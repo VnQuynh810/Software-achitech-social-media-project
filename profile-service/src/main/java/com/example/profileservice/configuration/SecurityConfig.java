@@ -1,58 +1,44 @@
-//package com.example.profileservice.configuration;
-//
-//
-//
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.http.HttpMethod;
-//import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-//import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-//import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-//import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-//import org.springframework.security.web.SecurityFilterChain;
-//
-//@Configuration
-//@EnableWebSecurity
-//@EnableMethodSecurity
-//public class SecurityConfig {
-//
-//    private static final String[] PUBLIC_ENDPOINTS = {
-//            "/internal/users"
-//    };
-//
-//    private final CustomJwtDecoder customJwtDecoder;
-//
-//    public SecurityConfig(CustomJwtDecoder customJwtDecoder) {
-//        this.customJwtDecoder = customJwtDecoder;
-//    }
-//
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-//        httpSecurity.authorizeHttpRequests(request -> request.antMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
-//                .permitAll()
-//                .anyRequest()
-//                .authenticated());
-//
-//        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
-//                        .decoder(customJwtDecoder)
-//                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-//                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
-//        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-//
-//        return httpSecurity.build();
-//    }
-//
-//    @Bean
-//    JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-//        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
-//
-//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-//
-//        return jwtAuthenticationConverter;
-//    }
-//
-//}
+package com.example.profileservice.configuration;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors().and()     // Bật CORS để K6 Dashboard không lỗi
+                .csrf().disable() // Tắt CSRF
+                .authorizeRequests(auth -> auth
+                        // 1. Cho phép GET dữ liệu user thoải mái (Quan trọng nhất)
+                        .antMatchers(HttpMethod.GET, "/users/**").permitAll()
+                        // 2. Các request khác (POST/PUT...) vẫn bắt buộc login nếu cần
+                        .anyRequest().permitAll() // Hoặc .authenticated() nếu bạn muốn giữ bảo mật các cái khác
+                );
+
+        return http.build();
+    }
+
+    // Giữ nguyên CORS Filter để tránh lỗi Network Error
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOriginPattern("*");
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+}

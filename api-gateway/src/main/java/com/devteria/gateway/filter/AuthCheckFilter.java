@@ -21,9 +21,7 @@ public class AuthCheckFilter implements GlobalFilter, Ordered {
 
         String path = exchange.getRequest().getURI().getPath();
 
-        // --- SỬA ĐOẠN NÀY ---
-        // Vì filter chạy SAU RewritePath, path lúc này đã mất "/v1" (thành /api/auth/login)
-        // Nên ta dùng .contains() hoặc check cả 2 trường hợp cho chắc ăn.
+
         if (path.contains("/auth/login") || path.contains("/auth/register")) {
             return chain.filter(exchange);
         }
@@ -35,8 +33,7 @@ public class AuthCheckFilter implements GlobalFilter, Ordered {
             return exchange.getResponse().setComplete();
         }
 
-        // Gọi Feign Client kiểm tra token
-        // Lưu ý: Feign này chạy được nhờ Bean HttpMessageConverters ta vừa thêm
+
         boolean valid = Boolean.TRUE.equals(authServiceClient.introspect(authHeader));
         if (!valid) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -48,7 +45,6 @@ public class AuthCheckFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        // Giữ nguyên Order 3 để chạy SAU Rate Limiter (Order 2)
         return 3;
     }
 }

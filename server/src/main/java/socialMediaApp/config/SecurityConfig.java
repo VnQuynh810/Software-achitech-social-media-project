@@ -86,7 +86,7 @@ public class SecurityConfig {
                 .permitAll()
 
 
-                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
 
 
                 .antMatchers(HttpMethod.GET, "/api/postimages/**").permitAll()

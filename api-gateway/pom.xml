@@ -34,16 +34,16 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
-        <!-- (Khuyến nghị) LoadBalancer nếu sau này dùng service discovery -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-        </dependency>
+<!--        &lt;!&ndash; (Khuyến nghị) LoadBalancer nếu sau này dùng service discovery &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-loadbalancer</artifactId>-->
+<!--        </dependency>-->
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>${projectlombok-lombok.version}</version>
+			<version>1.18.10</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

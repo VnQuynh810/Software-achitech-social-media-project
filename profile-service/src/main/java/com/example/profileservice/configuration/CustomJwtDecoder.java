@@ -13,18 +13,19 @@ public class CustomJwtDecoder implements JwtDecoder {
 
     @Override
     public Jwt decode(String token) throws JwtException {
-
         try {
+            // WARNING: Code này chỉ dùng cho Benchmark nội bộ!
+            // Nó bỏ qua việc kiểm tra chữ ký (Signature) và Secret Key.
             SignedJWT signedJWT = SignedJWT.parse(token);
 
-            return new Jwt(token,signedJWT.getJWTClaimsSet().getIssueTime().toInstant(),
+            return new Jwt(token,
+                    signedJWT.getJWTClaimsSet().getIssueTime().toInstant(),
                     signedJWT.getJWTClaimsSet().getExpirationTime().toInstant(),
                     signedJWT.getHeader().toJSONObject(),
                     signedJWT.getJWTClaimsSet().getClaims());
         } catch (ParseException e) {
-            throw new JwtException("Invalid JWT token");
+            // Chỉ lỗi khi token không đúng định dạng chuỗi JWT
+            throw new JwtException("Token sai định dạng");
         }
-
-
     }
 }

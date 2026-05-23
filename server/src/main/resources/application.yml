@@ -1,21 +1,42 @@
 spring:
   jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-      javax:
+        # Có thể để Spring tự suy ra dialect, nhưng khai báo rõ để chắc chắn:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+      jakarta:
         persistence:
           validation:
             mode: none
+
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/socialMediaApp
+    username: postgres
+    password: "1"
+    # driver-class-name: org.postgresql.Driver  # Thường không cần khai báo
+
+  sql:
+    init:
+      mode: never
+
+  cloud:
+    gateway:
+      routes:
+        - id: socialmedia
+          uri: http://localhost:8080
+          predicates:
+            - Cookie=mycookie,mycookievalue
+
     hibernate:
       ddl-auto: update
     show-sql: true
 
 
-  datasource:
-    url: jdbc:mysql://localhost:3301/socialMediaApp?useSSL=false&serverTimezone=UTC
-    username: root
-    password: nguyen2005
 
   cache:
     type: redis
@@ -33,5 +54,3 @@ jwt:
 logging:
   level:
     org.springframework.cache: DEBUG
-
-

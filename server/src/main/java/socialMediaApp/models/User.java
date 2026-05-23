@@ -1,5 +1,6 @@
 package socialMediaApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,7 +44,8 @@ public class User {
     Set<Follow> following;
     @OneToMany(mappedBy = "following",cascade = CascadeType.ALL)
     Set<Follow> followers;
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     Set<Post> posts;
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     Set<Like> likes;

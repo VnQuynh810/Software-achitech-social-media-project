@@ -74,6 +74,7 @@ public class SecurityConfig {
                 //Neu can thu api nao vao day viet y nhu dong ben duoi la duoc , t ko muon de no permit toan bo full api ngu lam
                 .antMatchers("/api/users/**").permitAll()
                 .antMatchers("/api/posts/**").permitAll()
+                .antMatchers("/api/postimages/**").permitAll()
                 .antMatchers(
                         "/",
                         "/index.html",
@@ -85,7 +86,7 @@ public class SecurityConfig {
                 .permitAll()
 
 
-                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
 
 
                 .antMatchers(HttpMethod.GET, "/api/postimages/**").permitAll()

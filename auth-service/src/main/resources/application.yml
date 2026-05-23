@@ -25,4 +25,4 @@ jwt:
 
 app:
   services:
-    profile: http://localhost:8083/profile
+    profile: http://localhost:8083/api/profile

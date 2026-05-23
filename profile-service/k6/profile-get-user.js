@@ -1,6 +1,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
+
 import { b64encode } from 'k6/encoding';
 
 const BASE_URL = __ENV.PROFILE_BASE_URL || 'http://localhost:8083/profile';
@@ -82,7 +83,9 @@ export default function (data) {
 
   sleep(1);
 }
-=======
+
+
+
 
 // --- CẤU HÌNH ---
 // URL của Profile Service (Cổng 8083, context-path /profile)
@@ -154,5 +157,4 @@ export default function () {
     */
 
     sleep(1);
-}
 

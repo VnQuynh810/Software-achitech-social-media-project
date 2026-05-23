@@ -78,7 +78,9 @@ public class SecurityConfig {
                 .antMatchers("/api/auth/**").permitAll()
 
 
+
                 .antMatchers(HttpMethod.GET, "/api/postimages/**").permitAll()
+
 
                 .anyRequest().authenticated()
                 .and()

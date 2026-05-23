@@ -6,7 +6,10 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.*;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
@@ -28,7 +31,6 @@ public class RedisResponseCacheFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String key = "cache:" + exchange.getRequest().getURI().toString();
-        // Nếu có cache, trả lại luôn
         return redisTemplate.opsForValue().get(key)
                 .flatMap(cachedBody -> {
                     exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
@@ -37,7 +39,6 @@ public class RedisResponseCacheFilter implements GlobalFilter, Ordered {
                     return exchange.getResponse().writeWith(Mono.just(buffer));
                 })
                 .switchIfEmpty(Mono.defer(() -> {
-                    // Nếu chưa cache, tiến hành request rồi cache lại response
                     ServerHttpResponseDecorator decoratedResponse = decorateResponse(exchange, key);
                     return chain.filter(exchange.mutate().response(decoratedResponse).build());
                 }));
@@ -73,7 +74,7 @@ public class RedisResponseCacheFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return -2;
+        return 10;
     }
 
     @Bean
@@ -81,5 +82,13 @@ public class RedisResponseCacheFilter implements GlobalFilter, Ordered {
         return (exchange, chain) -> chain.filter(exchange).then(Mono.fromRunnable(() -> {
             exchange.getResponse().getHeaders().set("Content-Type", "application/json; charset=UTF-8");
         }));
+    }
+
+    @Bean
+    public RedisCacheConfiguration redisCacheConfiguration() {
+        return RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(10))
+                .disableCachingNullValues()
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
     }
 }

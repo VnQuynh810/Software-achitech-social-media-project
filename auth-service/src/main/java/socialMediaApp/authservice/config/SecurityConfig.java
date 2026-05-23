@@ -77,6 +77,11 @@ public class SecurityConfig {
                 .antMatchers("/api/users/**").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
 
+
+
+                .antMatchers(HttpMethod.GET, "/api/postimages/**").permitAll()
+
+
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
